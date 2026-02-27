@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Validación de la información</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+    <main class="card">
+        <h1>Registro (Demo de validación)</h1>
+        <p class="muted">FrontEnd + BackEnd + verificación humano</p>
+
+        <form id="formRegistro" novalidate>
+            <!-- Datos obligatorios + formato -->
+            <label>
+                Nombre completo *
+                <input id="nombre" name="nombre" type="text" required minlength="3" maxlength="80"
+                    placeholder="Ej. Ana Pérez">
+                <small class="error" data-error-for="nombre"></small>
+            </label>
+
+            <label>
+                Correo electrónico *
+                <input id="email" name="email" type="email" required placeholder="ejemplo@dominio.com" />
+                <small class="error" data-error-for="email"></small>
+            </label>
+
+            <label>
+                Teléfono (10 dígitos) *
+                <input id="telefono" name="telefono" type="tel" required inputmode="numeric" pattern="^\d{10}$"
+                    placeholder="4421234567">
+                <small class="error" data-error-for="telefono"></small>
+            </label>
+
+            <!-- Expresiones regulares (password fuerte) -->
+            <label>
+                Contraseña *<span class="muted">(8+, mayús, minús, número, símbolo)</span>
+                <input id="password" name="password" type="password" required autocomplete="new-password"
+                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$" placeholder="••••••••">
+                <small class="error" data-error-for="password"></small>
+            </label>
+
+            <!-- Campo de confirmación -->
+            <label>
+                Confirmar contraseña *
+                <input id="password2" name="password2" type="password" required autocomplete="new-password"
+                    placeholder="••••••••">
+                <small class="error" data-error-for="password2"></small>
+            </label>
+
+            <!-- Coherencia (ejemplo): aceptación de términos -->
+            <label class="checkbox">
+                <input id="terminos" name="terminos" type="checkbox" required />
+                Acepto términos y condiciones *
+            </label>
+            <small class="error" data-error-for="terminos"></small>
+
+            <!-- Honeypot: debe quedar vacío (bots lo llenan) -->
+            <div class="honeypot" aria-hidden="true">
+                <label>Deja este campo vacío
+                    <input id="website" name="website" type="text" autocomplete="off" tabindex="-1">
+                </label>
+            </div>
+
+            <!-- Desafío-respuesta (humano) -->
+            <section class="captcha">
+                <p><strong>Verificación:</strong> Resuelve para continuar</p>
+                <div class="row">
+                    <span id="captchaPregunta" class="pill"></span>
+                    <input id="captcha" name="captcha" type="text" required inputmode="numeric" placeholder="Respuesta">
+                </div>
+                <small class="error" data-error-for="captcha"></small>
+            </section>
+
+            <button id="btnEnviar" type="submit">Crear cuenta</button>
+
+            <div id="status" class="status" role="status" aria-live="polite"></div>
+        </form>
+    </main>
+
+    <script src="./app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,16 @@
+:root { font-family:system-ui,Arial; }
+body { background:#f6f7fb; margin:0; padding:24px; }
+.card { max-width:520px; margin:0auto; background:#fff; border-radius:14px; padding:18px; box-shadow:06px24pxrgba(0,0,0,.08); }
+label { display:block; margin:12px0; }
+input { width:100%; padding:10px; border:1pxsolid #ccd; border-radius:10px; }
+button { margin-top:14px; width:100%; padding:12px; border:0; border-radius:10px; background:#1a73e8; color:#fff; font-weight:600; cursor:pointer; }
+button:disabled { opacity:.6; cursor:not-allowed; }
+.error { display:block; color:#b00020; min-height:18px; }
+.muted { color:#667; font-size:.95rem; }
+.checkbox { display:flex; gap:10px; align-items:center; }
+.checkboxinput { width:auto; }
+.status { margin-top:12px; padding:10px; border-radius:10px; background:#f1f3f9; }
+.honeypot { position:absolute; left:-9999px; top:-9999px; }
+.captcha { margin-top:12px; padding:12px; border:1pxdashed #ccd; border-radius:12px; }
+.row { display:flex; gap:10px; align-items:center; }
+.pill { padding:8px10px; background:#eef3ff; border-radius:999px; }
