@@ -38,10 +38,16 @@
 
                 <!-- Expresiones regulares (password fuerte) -->
                 <label>
-                    <span>Contraseña * <span class="muted"
-                            title="Requiere: 8 caracteres, mayúsculas, minúsculas, número y símbolo">(Segura)</span></span>
+                    <span>Contraseña *</span>
                     <input id="password" name="password" type="password" required autocomplete="new-password"
                         pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$" placeholder="••••••••">
+                    <span id="password-reqs" class="password-reqs">
+                        <span data-req="length" class="req-item">Mínimo 8 caracteres</span>
+                        <span data-req="lower" class="req-item">Una letra minúscula</span>
+                        <span data-req="upper" class="req-item">Una letra mayúscula</span>
+                        <span data-req="number" class="req-item">Un número</span>
+                        <span data-req="special" class="req-item">Un símbolo especial</span>
+                    </span>
                     <small class="error" data-error-for="password"></small>
                 </label>
 

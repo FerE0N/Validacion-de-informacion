@@ -35,6 +35,29 @@ function messageFromValidity(input) {
   return "Valor inválido.";
 }
 
+const passwordInput = document.getElementById("password");
+const passwordReqs = {
+  length: /.{8,}/,
+  lower: /[a-z]/,
+  upper: /[A-Z]/,
+  number: /\d/,
+  special: /[^A-Za-z0-9]/
+};
+
+passwordInput.addEventListener("input", (e) => {
+  const val = e.target.value;
+  for (const [key, regex] of Object.entries(passwordReqs)) {
+    const el = document.querySelector(`[data-req="${key}"]`);
+    if (el) {
+      if (regex.test(val)) {
+        el.classList.add("valid");
+      } else {
+        el.classList.remove("valid");
+      }
+    }
+  }
+});
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   clearAllErrors();
