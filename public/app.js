@@ -287,3 +287,18 @@ testBtns.forEach(btn => {
     }
   });
 });
+
+// --- TOGGLE TEST PANEL ---
+const testPanel = document.getElementById("testPanel");
+const btnToggleTest = document.getElementById("btnToggleTest");
+const btnCloseTest = document.getElementById("btnCloseTest");
+
+if (btnToggleTest && testPanel && btnCloseTest) {
+  btnToggleTest.addEventListener("click", () => {
+    testPanel.classList.toggle("open");
+  });
+  
+  btnCloseTest.addEventListener("click", () => {
+    testPanel.classList.remove("open");
+  });
+}

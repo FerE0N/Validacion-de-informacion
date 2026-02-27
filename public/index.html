@@ -93,9 +93,17 @@
         </form>
     </main>
 
+    <!-- Botón Flotante para Pruebas -->
+    <button id="btnToggleTest" class="btn-toggle-test" aria-label="Abrir panel de pruebas" type="button">
+        🧪 Panel de Pruebas
+    </button>
+
     <!-- Panel de Pruebas (Punto 4) -->
-    <aside class="test-panel">
-        <h3>Pruebas (Demo Pto. 4)</h3>
+    <aside id="testPanel" class="test-panel">
+        <div class="test-panel-header">
+            <h3>Pruebas (Demo Pto. 4)</h3>
+            <button id="btnCloseTest" class="btn-close-test" aria-label="Cerrar panel" type="button">&times;</button>
+        </div>
         <div class="test-categories">
             <div class="test-group">
                 <h4>A) FrontEnd</h4>

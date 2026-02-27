@@ -304,24 +304,83 @@ button:disabled {
   }
 }
 
+/* Test Panel Toggle Button */
+.btn-toggle-test {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: auto;
+  margin: 0;
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-size: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
 /* Test Panel Styles */
 .test-panel {
-  margin-top: 24px;
-  background: rgba(255, 255, 255, 0.9);
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  margin-top: 0;
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   padding: 20px;
   border-radius: 16px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.2);
   border: 1px solid var(--border-color);
-  width: 100%;
-  max-width: 540px;
+  width: 90vw;
+  max-width: 440px;
+  z-index: 999;
+  
+  /* Hidden state */
+  transform: translateY(20px) scale(0.95);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: bottom right;
 }
 
-.test-panel h3 {
-  margin: 0 0 16px 0;
+.test-panel.open {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  visibility: visible;
+}
+
+.test-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.test-panel-header h3 {
+  margin: 0;
   font-size: 1.2rem;
   color: #0f172a;
-  text-align: center;
+}
+
+.btn-close-test {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  width: 32px;
+  height: 32px;
+  font-size: 1.5rem;
+  color: #64748b;
+  box-shadow: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+.btn-close-test:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+  box-shadow: none;
+  transform: scale(1.1);
 }
 
 .test-categories {
