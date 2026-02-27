@@ -16,20 +16,20 @@
         <form id="formRegistro" novalidate>
             <div class="form-grid">
                 <!-- Datos obligatorios + formato -->
-                <label>
+                <label class="col-4">
                     <span>Nombre completo *</span>
                     <input id="nombre" name="nombre" type="text" required minlength="3" maxlength="80"
                         placeholder="Ej. Ana Pérez">
                     <small class="error" data-error-for="nombre"></small>
                 </label>
 
-                <label>
+                <label class="col-4">
                     <span>Correo electrónico *</span>
                     <input id="email" name="email" type="email" required placeholder="ejemplo@dominio.com" />
                     <small class="error" data-error-for="email"></small>
                 </label>
 
-                <label class="full-width">
+                <label class="col-4">
                     <span>Teléfono (10 dígitos) *</span>
                     <input id="telefono" name="telefono" type="tel" required inputmode="numeric" pattern="^\d{10}$"
                         placeholder="4421234567">
@@ -37,27 +37,30 @@
                 </label>
 
                 <!-- Expresiones regulares (password fuerte) -->
-                <label>
+                <label class="col-6">
                     <span>Contraseña *</span>
                     <input id="password" name="password" type="password" required autocomplete="new-password"
                         pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$" placeholder="••••••••">
-                    <span id="password-reqs" class="password-reqs">
-                        <span data-req="length" class="req-item">Mínimo 8 caracteres</span>
-                        <span data-req="lower" class="req-item">Una letra minúscula</span>
-                        <span data-req="upper" class="req-item">Una letra mayúscula</span>
-                        <span data-req="number" class="req-item">Un número</span>
-                        <span data-req="special" class="req-item">Un símbolo especial</span>
-                    </span>
                     <small class="error" data-error-for="password"></small>
                 </label>
 
                 <!-- Campo de confirmación -->
-                <label>
+                <label class="col-6">
                     <span>Confirmar contraseña *</span>
                     <input id="password2" name="password2" type="password" required autocomplete="new-password"
                         placeholder="••••••••">
                     <small class="error" data-error-for="password2"></small>
                 </label>
+
+                <div class="full-width">
+                    <div id="password-reqs" class="password-reqs">
+                        <span data-req="length" class="req-item">Mínimo 8 caracteres</span>
+                        <span data-req="lower" class="req-item">Una letra minúscula</span>
+                        <span data-req="upper" class="req-item">Una letra mayúscula</span>
+                        <span data-req="number" class="req-item">Un número</span>
+                        <span data-req="special" class="req-item">Un símbolo especial</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Coherencia (ejemplo): aceptación de términos -->
@@ -89,6 +92,39 @@
             <div id="status" class="status" role="status" aria-live="polite"></div>
         </form>
     </main>
+
+    <!-- Botón Flotante para Pruebas -->
+    <button id="btnToggleTest" class="btn-toggle-test" aria-label="Abrir panel de pruebas" type="button">
+        🧪 Panel de Pruebas
+    </button>
+
+    <!-- Panel de Pruebas (Punto 4) -->
+    <aside id="testPanel" class="test-panel">
+        <div class="test-panel-header">
+            <h3>Pruebas (Demo Pto. 4)</h3>
+            <button id="btnCloseTest" class="btn-close-test" aria-label="Cerrar panel" type="button">&times;</button>
+        </div>
+        <div class="test-categories">
+            <div class="test-group">
+                <h4>A) FrontEnd</h4>
+                <button type="button" class="btn-test" data-test="A1">A1. Campos vacíos</button>
+                <button type="button" class="btn-test" data-test="A2">A2. Email sin @</button>
+                <button type="button" class="btn-test" data-test="A3">A3. Teléfono 9 dígitos</button>
+                <button type="button" class="btn-test" data-test="A4">A4. Pass débil</button>
+                <button type="button" class="btn-test" data-test="A5">A5. Pass diferente</button>
+                <button type="button" class="btn-test" data-test="A6">A6. Mal Captcha</button>
+            </div>
+            <div class="test-group">
+                <h4>B) BackEnd</h4>
+                <button type="button" class="btn-test" data-test="B_OK">✓ Registrar Usuario BD</button>
+                <button type="button" class="btn-test" data-test="B1">B1. Mismo Email</button>
+                <button type="button" class="btn-test" data-test="B2">B2. Mismo Teléfono</button>
+                <button type="button" class="btn-test" data-test="B3">B3. Alterar Request</button>
+                <button type="button" class="btn-test" data-test="B4">B4. Llenar Honeypot</button>
+                <button type="button" class="btn-test" data-test="B5">B5. Mal Captcha Req</button>
+            </div>
+        </div>
+    </aside>
 
     <script src="./app.js"></script>
 </body>
