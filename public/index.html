@@ -14,42 +14,45 @@
         <p class="muted">FrontEnd + BackEnd + verificación humano</p>
 
         <form id="formRegistro" novalidate>
-            <!-- Datos obligatorios + formato -->
-            <label>
-                Nombre completo *
-                <input id="nombre" name="nombre" type="text" required minlength="3" maxlength="80"
-                    placeholder="Ej. Ana Pérez">
-                <small class="error" data-error-for="nombre"></small>
-            </label>
+            <div class="form-grid">
+                <!-- Datos obligatorios + formato -->
+                <label>
+                    <span>Nombre completo *</span>
+                    <input id="nombre" name="nombre" type="text" required minlength="3" maxlength="80"
+                        placeholder="Ej. Ana Pérez">
+                    <small class="error" data-error-for="nombre"></small>
+                </label>
 
-            <label>
-                Correo electrónico *
-                <input id="email" name="email" type="email" required placeholder="ejemplo@dominio.com" />
-                <small class="error" data-error-for="email"></small>
-            </label>
+                <label>
+                    <span>Correo electrónico *</span>
+                    <input id="email" name="email" type="email" required placeholder="ejemplo@dominio.com" />
+                    <small class="error" data-error-for="email"></small>
+                </label>
 
-            <label>
-                Teléfono (10 dígitos) *
-                <input id="telefono" name="telefono" type="tel" required inputmode="numeric" pattern="^\d{10}$"
-                    placeholder="4421234567">
-                <small class="error" data-error-for="telefono"></small>
-            </label>
+                <label class="full-width">
+                    <span>Teléfono (10 dígitos) *</span>
+                    <input id="telefono" name="telefono" type="tel" required inputmode="numeric" pattern="^\d{10}$"
+                        placeholder="4421234567">
+                    <small class="error" data-error-for="telefono"></small>
+                </label>
 
-            <!-- Expresiones regulares (password fuerte) -->
-            <label>
-                Contraseña *<span class="muted">(8+, mayús, minús, número, símbolo)</span>
-                <input id="password" name="password" type="password" required autocomplete="new-password"
-                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$" placeholder="••••••••">
-                <small class="error" data-error-for="password"></small>
-            </label>
+                <!-- Expresiones regulares (password fuerte) -->
+                <label>
+                    <span>Contraseña * <span class="muted"
+                            title="Requiere: 8 caracteres, mayúsculas, minúsculas, número y símbolo">(Segura)</span></span>
+                    <input id="password" name="password" type="password" required autocomplete="new-password"
+                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$" placeholder="••••••••">
+                    <small class="error" data-error-for="password"></small>
+                </label>
 
-            <!-- Campo de confirmación -->
-            <label>
-                Confirmar contraseña *
-                <input id="password2" name="password2" type="password" required autocomplete="new-password"
-                    placeholder="••••••••">
-                <small class="error" data-error-for="password2"></small>
-            </label>
+                <!-- Campo de confirmación -->
+                <label>
+                    <span>Confirmar contraseña *</span>
+                    <input id="password2" name="password2" type="password" required autocomplete="new-password"
+                        placeholder="••••••••">
+                    <small class="error" data-error-for="password2"></small>
+                </label>
+            </div>
 
             <!-- Coherencia (ejemplo): aceptación de términos -->
             <label class="checkbox">
