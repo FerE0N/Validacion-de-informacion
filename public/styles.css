@@ -424,13 +424,15 @@ button:disabled {
   transform: translateX(4px);
 }
 
-.btn-test[data-test="B_OK"] {
+.btn-test[data-test="B_OK"],
+.btn-test.active {
   background: #dcfce7;
   color: #166534;
   border-color: #86efac;
 }
 
-.btn-test[data-test="B_OK"]:hover {
+.btn-test[data-test="B_OK"]:hover,
+.btn-test.active:hover {
   background: #22c55e;
   color: white;
 }

@@ -181,6 +181,10 @@ function fillForm(data) {
 
 testBtns.forEach(btn => {
   btn.addEventListener('click', async () => {
+    // Resetear clases activas
+    testBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
     const testId = btn.getAttribute('data-test');
     
     switch(testId) {

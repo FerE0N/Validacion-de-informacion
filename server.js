@@ -37,16 +37,20 @@ async function validateRegister(body) {
   const errors = {};
 
   // 1) Obligatorios
-  if (!body.nombre || body.nombre.trim().length < 3) errors.nombre = "Nombre obligatorio (mínimo 3 caracteres).";
+  if (!body.nombre || body.nombre.trim().length < 3)
+    errors.nombre = "Nombre obligatorio (mínimo 3 caracteres).";
   if (!body.email) errors.email = "Correo obligatorio.";
   if (!body.telefono) errors.telefono = "Teléfono obligatorio.";
   if (!body.password) errors.password = "Contraseña obligatoria.";
   if (!body.password2) errors.password2 = "Confirma tu contraseña.";
-  if (body.terminos !== true) errors.terminos = "Debes aceptar términos y condiciones.";
+  if (body.terminos !== true)
+    errors.terminos = "Debes aceptar términos y condiciones.";
 
   // 2) Formato
-  if (body.email && !emailRe.test(body.email)) errors.email = "Formato de correo inválido.";
-  if (body.telefono && !phoneRe.test(body.telefono)) errors.telefono = "Teléfono inválido (10 dígitos).";
+  if (body.email && !emailRe.test(body.email))
+    errors.email = "Formato de correo inválido.";
+  if (body.telefono && !phoneRe.test(body.telefono))
+    errors.telefono = "Teléfono inválido (10 dígitos).";
   if (body.password && !passRe.test(body.password)) {
     errors.password = "Contraseña débil (8+, mayús, minús, número y símbolo).";
   }
@@ -58,24 +62,54 @@ async function validateRegister(body) {
 
   // 4) Datos únicos (Validación contra SQLite)
   if (body.email) {
-    const existingEmail = await new Promise(resolve => db.get("SELECT id FROM users WHERE email = ?", [body.email], (err, row) => resolve(row)));
-    if (existingEmail) errors.email = "Este correo ya está registrado en la base de datos.";
+    const existingEmail = await new Promise((resolve) =>
+      db.get("SELECT id FROM users WHERE email = ?", [body.email], (err, row) =>
+        resolve(row),
+      ),
+    );
+    if (existingEmail) {
+      errors.email = "Este correo ya está registrado en la base de datos.";
+      console.warn(
+        `[LOG B1] Rechazado: Correo duplicado detectado (${body.email})`,
+      );
+    }
   }
-  
+
   if (body.telefono) {
-    const existingPhone = await new Promise(resolve => db.get("SELECT id FROM users WHERE telefono = ?", [body.telefono], (err, row) => resolve(row)));
-    if (existingPhone) errors.telefono = "Este teléfono ya está registrado en la base de datos.";
+    const existingPhone = await new Promise((resolve) =>
+      db.get(
+        "SELECT id FROM users WHERE telefono = ?",
+        [body.telefono],
+        (err, row) => resolve(row),
+      ),
+    );
+    if (existingPhone) {
+      errors.telefono = "Este teléfono ya está registrado en la base de datos.";
+      console.warn(
+        `[LOG B2] Rechazado: Teléfono duplicado detectado (${body.telefono})`,
+      );
+    }
   }
 
   // 5) Verificación humano (demo)
   // 5.1 Honeypot: si viene lleno, asumimos bot
   if (body.website && body.website.trim().length > 0) {
     errors.website = "Actividad sospechosa detectada (Bot).";
+    console.warn(
+      `[LOG B4] Rechazado: Honeypot activado por bot (Valor llenado: ${body.website})`,
+    );
   }
 
   // 5.2 Desafío-respuesta (demo simplificado)
-  if (typeof body.captcha !== "number" || typeof body.captchaExpected !== "number" || body.captcha !== body.captchaExpected) {
+  if (
+    typeof body.captcha !== "number" ||
+    typeof body.captchaExpected !== "number" ||
+    body.captcha !== body.captchaExpected
+  ) {
     errors.captcha = "Verificación humana fallida.";
+    console.warn(
+      `[LOG B5] Rechazado: Captcha alterado desde el Request (Enviado: ${body.captcha}, Esperado: ${body.captchaExpected})`,
+    );
   }
 
   return errors;
@@ -89,22 +123,46 @@ app.post("/api/register", async (req, res) => {
 
   const errors = await validateRegister(body);
   if (Object.keys(errors).length > 0) {
+    // Si hay errores basicos (obligatorios o de formato que debieron atraparse en UI) mostramos log B3
+    const hasBasicErrors =
+      errors.nombre ||
+      (errors.email &&
+        errors.email !==
+          "Este correo ya está registrado en la base de datos.") ||
+      errors.password ||
+      errors.password2 ||
+      errors.terminos;
+
+    if (hasBasicErrors) {
+      console.warn(
+        `[LOG B3] Rechazado: Request alterado brincando el front-end (Errores: ${Object.keys(errors).join(", ")})`,
+      );
+    }
+
     return res.status(400).json({
       message: "Validación fallida. Revisa los campos.",
-      errors
+      errors,
     });
   }
 
   // Crear usuario en base de datos SQLite
-  db.run("INSERT INTO users (nombre, email, telefono) VALUES (?, ?, ?)",
+  db.run(
+    "INSERT INTO users (nombre, email, telefono) VALUES (?, ?, ?)",
     [body.nombre.trim(), body.email, body.telefono],
-    function(err) {
+    function (err) {
       if (err) {
         console.error("Error al insertar usuario:", err);
-        return res.status(500).json({ message: "Error interno del servidor", errors: {} });
+        return res
+          .status(500)
+          .json({ message: "Error interno del servidor", errors: {} });
       }
-      return res.status(201).json({ message: "Usuario insertado en BD SQLite exitosamente." });
-    }
+      console.log(
+        `[LOG OK] Usuario insertado en BD exitosamente (Email: ${body.email})`,
+      );
+      return res
+        .status(201)
+        .json({ message: "Usuario insertado en BD SQLite exitosamente." });
+    },
   );
 });
 
