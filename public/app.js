@@ -142,3 +142,148 @@ form.addEventListener("submit", async (e) => {
     btnEnviar.disabled = false;
   }
 });
+
+// --- PANEL DE PRUEBAS (Demostración Caso 4) ---
+const testBtns = document.querySelectorAll('.btn-test');
+
+const defaultUser = {
+  nombre: "Ana Pérez",
+  email: "ana@dominio.com",
+  telefono: "4421234567",
+  password: "Password123!",
+  password2: "Password123!",
+  terminos: true
+};
+
+function fillForm(data) {
+  document.getElementById("nombre").value = data.nombre !== undefined ? data.nombre : defaultUser.nombre;
+  document.getElementById("email").value = data.email !== undefined ? data.email : defaultUser.email;
+  document.getElementById("telefono").value = data.telefono !== undefined ? data.telefono : defaultUser.telefono;
+  document.getElementById("password").value = data.password !== undefined ? data.password : defaultUser.password;
+  document.getElementById("password2").value = data.password2 !== undefined ? data.password2 : defaultUser.password2;
+  document.getElementById("terminos").checked = data.terminos !== undefined ? data.terminos : defaultUser.terminos;
+  
+  // Limpiar honeypot por defecto para los tests normales
+  document.getElementById("website").value = data.website || "";
+
+  // Setear captcha manualmente si se pasa
+  if(data.captcha !== undefined) {
+    document.getElementById("captcha").value = data.captcha;
+  } else {
+    document.getElementById("captcha").value = captchaA + captchaB;
+  }
+  
+  // Triggermear el evento input en la password para que se actualice el checklist UI
+  passwordInput.dispatchEvent(new Event('input'));
+  clearAllErrors();
+  setStatus("Test cargado. Haz clic en 'Crear cuenta' o se enviará automáticamente...");
+}
+
+testBtns.forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const testId = btn.getAttribute('data-test');
+    
+    switch(testId) {
+      // --- A) FRONTEND ---
+      case 'A1': 
+        // Campos vacíos
+        fillForm({ nombre: "", email: "", telefono: "", password: "", password2: "", terminos: false, captcha: "" });
+        break;
+      case 'A2':
+        // Email sin @
+        fillForm({ email: "anadominio.com" });
+        break;
+      case 'A3':
+        // Teléfono < 10 dígitos
+        fillForm({ telefono: "442123456" });
+        break;
+      case 'A4':
+        // Pass débil (sin símbolo ni mayúscula p.ej)
+        fillForm({ password: "password123", password2: "password123" });
+        break;
+      case 'A5':
+        // Pass diferente
+        fillForm({ password: "Password123!", password2: "OtraPass123!" });
+        break;
+      case 'A6':
+        // Captcha incorrecto Front
+        fillForm({ captcha: "999" });
+        break;
+
+      // --- B) BACKEND ---
+      case 'B_OK':
+        // Usuario válido por defecto
+        fillForm({});
+        break;
+      case 'B1':
+        // Usamos el usuario por defecto (el servidor validará contra DB)
+        // Se asume que previamente se hizo B_OK
+        fillForm({});
+        break;
+      case 'B2':
+        // Mismo teléfono (diferente email para provocar específicamente el error de teléfono)
+        fillForm({ email: "otro@correo.com" });
+        break;
+      case 'B3':
+        // Alterar el Request: Enviar por Fetch un payload inválido (nombre corto, email mal) saltándose HTML5
+        setStatus("Realizando llamada fetch maliciosa (saltando validación FrontEnd)...");
+        try {
+          const res = await fetch("/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              nombre: "A", // < 3
+              email: "mal-email", // Sin formato correo
+              telefono: "12", // Corto
+              password: "123", // Debil
+              password2: "456", // != password
+              terminos: false,
+              captcha: captchaA + captchaB,
+              captchaExpected: captchaA + captchaB
+            })
+          });
+          const data = await res.json();
+          if(!res.ok && data.errors) {
+            clearAllErrors();
+            for (const [field, msg] of Object.entries(data.errors)) {
+              showFieldError(field, msg);
+            }
+            setStatus("🚀 Validación de Backend atrapó el request alterado exitosamente.");
+          }
+        } catch(e) {}
+        return; // Retornamos para no hacer submit manual
+      case 'B4':
+        // Llenar Honeypot
+        fillForm({ website: "http://bot-spam.com" });
+        break;
+      case 'B5':
+        // Mal Captcha por Request (Alterando el captcha Expected en B3 ya es lo mismo, pero para este caso el bot envía un captcha manipulado directamente)
+        setStatus("Realizando llamada fetch con Captcha manipulado por bot...");
+        try {
+          const res = await fetch("/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...defaultUser, 
+              captcha: 0, 
+              captchaExpected: -1 // Valores inconsistentes
+            })
+          });
+          const data = await res.json();
+          if(!res.ok && data.errors) {
+            clearAllErrors();
+            for (const [field, msg] of Object.entries(data.errors)) {
+              showFieldError(field, msg);
+            }
+            setStatus("🚀 Validación de Backend atrapó el Captcha manipulado exitosamente.");
+          }
+        } catch(e) {}
+        return;
+    }
+
+    // Para casos FrontEnd e intentos de Honeypot, simulamos clic en el botón submit auto
+    if(!['B3', 'B5'].includes(testId)) {
+      setTimeout(() => btnEnviar.click(), 500); 
+    }
+  });
+});

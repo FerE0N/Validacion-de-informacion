@@ -90,6 +90,31 @@
         </form>
     </main>
 
+    <!-- Panel de Pruebas (Punto 4) -->
+    <aside class="test-panel">
+        <h3>Pruebas (Demo Pto. 4)</h3>
+        <div class="test-categories">
+            <div class="test-group">
+                <h4>A) FrontEnd</h4>
+                <button type="button" class="btn-test" data-test="A1">A1. Campos vacíos</button>
+                <button type="button" class="btn-test" data-test="A2">A2. Email sin @</button>
+                <button type="button" class="btn-test" data-test="A3">A3. Teléfono 9 dígitos</button>
+                <button type="button" class="btn-test" data-test="A4">A4. Pass débil</button>
+                <button type="button" class="btn-test" data-test="A5">A5. Pass diferente</button>
+                <button type="button" class="btn-test" data-test="A6">A6. Mal Captcha</button>
+            </div>
+            <div class="test-group">
+                <h4>B) BackEnd</h4>
+                <button type="button" class="btn-test" data-test="B_OK">✓ Registrar Usuario BD</button>
+                <button type="button" class="btn-test" data-test="B1">B1. Mismo Email</button>
+                <button type="button" class="btn-test" data-test="B2">B2. Mismo Teléfono</button>
+                <button type="button" class="btn-test" data-test="B3">B3. Alterar Request</button>
+                <button type="button" class="btn-test" data-test="B4">B4. Llenar Honeypot</button>
+                <button type="button" class="btn-test" data-test="B5">B5. Mal Captcha Req</button>
+            </div>
+        </div>
+    </aside>
+
     <script src="./app.js"></script>
 </body>
 

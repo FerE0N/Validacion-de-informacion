@@ -1,7 +1,7 @@
-
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
+import sqlite3 from "sqlite3";
 
 const app = express();
 app.use(express.json());
@@ -9,19 +9,31 @@ app.use(express.json());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Inicializar SQLite
+const dbPath = path.join(__dirname, "database.db");
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) console.error("Error al abrir DB:", err);
+  else {
+    db.run(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nombre TEXT,
+        email TEXT UNIQUE,
+        telefono TEXT UNIQUE
+      )
+    `);
+  }
+});
+
 // Servir el frontend
 app.use(express.static(path.join(__dirname, "public")));
-
-// "Base de datos" en memoria (demo)
-const users = new Map(); // key: email, value: user
-const phones = new Set(); // para validar teléfono único
 
 // Regex servidor (no confiar en el cliente)
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRe = /^\d{10}$/;
 const passRe = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 
-function validateRegister(body) {
+async function validateRegister(body) {
   const errors = {};
 
   // 1) Obligatorios
@@ -44,18 +56,24 @@ function validateRegister(body) {
     errors.password2 = "Las contraseñas no coinciden.";
   }
 
-  // 4) Datos únicos
-  if (body.email && users.has(body.email.toLowerCase())) errors.email = "Este correo ya está registrado.";
-  if (body.telefono && phones.has(body.telefono)) errors.telefono = "Este teléfono ya está registrado.";
+  // 4) Datos únicos (Validación contra SQLite)
+  if (body.email) {
+    const existingEmail = await new Promise(resolve => db.get("SELECT id FROM users WHERE email = ?", [body.email], (err, row) => resolve(row)));
+    if (existingEmail) errors.email = "Este correo ya está registrado en la base de datos.";
+  }
+  
+  if (body.telefono) {
+    const existingPhone = await new Promise(resolve => db.get("SELECT id FROM users WHERE telefono = ?", [body.telefono], (err, row) => resolve(row)));
+    if (existingPhone) errors.telefono = "Este teléfono ya está registrado en la base de datos.";
+  }
 
   // 5) Verificación humano (demo)
   // 5.1 Honeypot: si viene lleno, asumimos bot
   if (body.website && body.website.trim().length > 0) {
-    errors.website = "Actividad sospechosa detectada.";
+    errors.website = "Actividad sospechosa detectada (Bot).";
   }
 
   // 5.2 Desafío-respuesta (demo simplificado)
-  // En producción: el servidor debe generar y verificar sin confiar en el cliente.
   if (typeof body.captcha !== "number" || typeof body.captchaExpected !== "number" || body.captcha !== body.captchaExpected) {
     errors.captcha = "Verificación humana fallida.";
   }
@@ -63,13 +81,13 @@ function validateRegister(body) {
   return errors;
 }
 
-app.post("/api/register", (req, res) => {
+app.post("/api/register", async (req, res) => {
   const body = req.body ?? {};
   // Normalizar
   body.email = (body.email || "").trim().toLowerCase();
   body.telefono = (body.telefono || "").trim();
 
-  const errors = validateRegister(body);
+  const errors = await validateRegister(body);
   if (Object.keys(errors).length > 0) {
     return res.status(400).json({
       message: "Validación fallida. Revisa los campos.",
@@ -77,15 +95,17 @@ app.post("/api/register", (req, res) => {
     });
   }
 
-  // "Crear" usuario (demo: NO guardes contraseñas en texto plano en sistemas reales)
-  users.set(body.email, {
-    nombre: body.nombre.trim(),
-    email: body.email,
-    telefono: body.telefono
-  });
-  phones.add(body.telefono);
-
-  return res.status(201).json({ message: "Usuario registrado (demo)." });
+  // Crear usuario en base de datos SQLite
+  db.run("INSERT INTO users (nombre, email, telefono) VALUES (?, ?, ?)",
+    [body.nombre.trim(), body.email, body.telefono],
+    function(err) {
+      if (err) {
+        console.error("Error al insertar usuario:", err);
+        return res.status(500).json({ message: "Error interno del servidor", errors: {} });
+      }
+      return res.status(201).json({ message: "Usuario insertado en BD SQLite exitosamente." });
+    }
+  );
 });
 
 app.listen(3000, () => {
