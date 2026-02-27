@@ -16,20 +16,20 @@
         <form id="formRegistro" novalidate>
             <div class="form-grid">
                 <!-- Datos obligatorios + formato -->
-                <label>
+                <label class="col-4">
                     <span>Nombre completo *</span>
                     <input id="nombre" name="nombre" type="text" required minlength="3" maxlength="80"
                         placeholder="Ej. Ana Pérez">
                     <small class="error" data-error-for="nombre"></small>
                 </label>
 
-                <label>
+                <label class="col-4">
                     <span>Correo electrónico *</span>
                     <input id="email" name="email" type="email" required placeholder="ejemplo@dominio.com" />
                     <small class="error" data-error-for="email"></small>
                 </label>
 
-                <label class="full-width">
+                <label class="col-4">
                     <span>Teléfono (10 dígitos) *</span>
                     <input id="telefono" name="telefono" type="tel" required inputmode="numeric" pattern="^\d{10}$"
                         placeholder="4421234567">
@@ -37,27 +37,30 @@
                 </label>
 
                 <!-- Expresiones regulares (password fuerte) -->
-                <label>
+                <label class="col-6">
                     <span>Contraseña *</span>
                     <input id="password" name="password" type="password" required autocomplete="new-password"
                         pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$" placeholder="••••••••">
-                    <span id="password-reqs" class="password-reqs">
-                        <span data-req="length" class="req-item">Mínimo 8 caracteres</span>
-                        <span data-req="lower" class="req-item">Una letra minúscula</span>
-                        <span data-req="upper" class="req-item">Una letra mayúscula</span>
-                        <span data-req="number" class="req-item">Un número</span>
-                        <span data-req="special" class="req-item">Un símbolo especial</span>
-                    </span>
                     <small class="error" data-error-for="password"></small>
                 </label>
 
                 <!-- Campo de confirmación -->
-                <label>
+                <label class="col-6">
                     <span>Confirmar contraseña *</span>
                     <input id="password2" name="password2" type="password" required autocomplete="new-password"
                         placeholder="••••••••">
                     <small class="error" data-error-for="password2"></small>
                 </label>
+
+                <div class="full-width">
+                    <div id="password-reqs" class="password-reqs">
+                        <span data-req="length" class="req-item">Mínimo 8 caracteres</span>
+                        <span data-req="lower" class="req-item">Una letra minúscula</span>
+                        <span data-req="upper" class="req-item">Una letra mayúscula</span>
+                        <span data-req="number" class="req-item">Un número</span>
+                        <span data-req="special" class="req-item">Un símbolo especial</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Coherencia (ejemplo): aceptación de términos -->

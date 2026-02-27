@@ -36,7 +36,7 @@ body {
 
 .card {
   width: 100%;
-  max-width: 540px;
+  max-width: 800px;
   background: var(--card-bg);
   backdrop-filter: blur(10px);
   border-radius: 20px;
@@ -105,9 +105,6 @@ input:not([type="checkbox"]):focus {
 }
 
 /* Invalid state visualization */
-input:not([type="checkbox"]):not(:placeholder-shown):invalid {
-  /* border-color: var(--error-color); */
-}
 
 button {
   margin-top: 24px;
@@ -156,11 +153,11 @@ button:disabled {
 }
 
 .password-reqs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 8px;
-  margin-top: 8px;
-  margin-bottom: 4px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+  margin-top: 4px;
+  margin-bottom: 8px;
 }
 
 .req-item {
@@ -285,12 +282,26 @@ button:disabled {
 
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(12, 1fr);
   gap: 0 16px;
 }
 
+.col-4 {
+  grid-column: span 4;
+}
+
+.col-6 {
+  grid-column: span 6;
+}
+
 .full-width {
-  grid-column: span 2;
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+  .col-4, .col-6 {
+    grid-column: 1 / -1;
+  }
 }
 
 /* Test Panel Styles */
@@ -383,10 +394,10 @@ button:disabled {
     padding: 10px 14px;
   }
   .form-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(12, 1fr);
     gap: 0;
   }
-  .full-width {
-    grid-column: span 1;
+  .col-4, .col-6, .full-width {
+    grid-column: 1 / -1;
   }
 }
